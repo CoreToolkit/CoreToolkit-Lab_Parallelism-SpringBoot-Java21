@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -56,4 +56,21 @@ class PiDigitsControllerTest {
                 .param("count", "-1"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldReturnBadRequestForMismatchCharacters() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "abc")
+                .param("count", "def"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnInternalServerError() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digit")
+                .param("start", "1")
+                .param("count", "5"))
+                .andExpect(status().isInternalServerError());
+    }
+
 }

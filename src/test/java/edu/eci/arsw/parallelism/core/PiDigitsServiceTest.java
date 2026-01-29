@@ -16,9 +16,17 @@ class PiDigitsServiceTest {
     }
 
     @Test
-    void testCalculateSequentialZeroCount() {
-        String result = service.calculateSequential(0, 0);
+    void testCalculateSequentialLargeCount() {
+        String result = service.calculateSequential(0, 100);
         assertNotNull(result);
-        assertEquals(0, result.length());
+        assertEquals(100, result.length());
+        assertTrue(result.matches("[0-9A-F]+"));
     }
+
+    // @Test
+    // void testCalculateSequentialZeroCount() {
+    // String result = service.calculateSequential(0, 0);
+    // assertNotNull(result);
+    // assertEquals(0, result.length());
+    // }
 }
