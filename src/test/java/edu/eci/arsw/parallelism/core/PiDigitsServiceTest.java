@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.util.Map;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -60,5 +63,28 @@ class PiDigitsServiceTest {
             assertEquals(expected, result,
                     "Failed with " + threads + " threads");
         }
+    }
+
+    @Test
+    void comparePerformanceShouldReturnValidStructure() {
+        Map<String, Object> result = service.comparePerformance(0, 1000);
+
+        assertTrue(result.containsKey("sequential_ms"));
+        assertTrue(result.containsKey("parallel_ms"));
+        assertTrue(result.containsKey("available_processors"));
+
+        assertTrue(result.get("sequential_ms") instanceof Long);
+        assertTrue(result.get("parallel_ms") instanceof Map);
+    }
+
+    @Test
+    void parallelResultsShouldContainThreadConfigurations() {
+        Map<String, Object> result = service.comparePerformance(0, 1000);
+        Map<String, Long> parallel =
+                (Map<String, Long>) result.get("parallel_ms");
+
+        assertTrue(parallel.containsKey("threads_1"));
+        assertTrue(parallel.containsKey("threads_200"));
+        assertTrue(parallel.containsKey("threads_500"));
     }
 }

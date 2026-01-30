@@ -137,4 +137,15 @@ class PiDigitsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void compareEndpointShouldReturn200() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/compare")
+                        .param("start", "0")
+                        .param("count", "1000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sequential_ms").exists())
+                .andExpect(jsonPath("$.parallel_ms").exists());
+    }
+
+
 }
