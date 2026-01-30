@@ -47,9 +47,13 @@ public class PiDigitsController {
                     example = "10",
                     required = true
             )
-            @RequestParam int count) {
+            @RequestParam int count,
 
-        String digits = service.calculateSequential(start, count);
+            @RequestParam(required = false) Integer threads,
+
+            @RequestParam(required = false) String strategy) {
+
+        String digits = service.calculate(start, count, threads, strategy);
         return new PiResponse(start, count, digits);
     }
 }
