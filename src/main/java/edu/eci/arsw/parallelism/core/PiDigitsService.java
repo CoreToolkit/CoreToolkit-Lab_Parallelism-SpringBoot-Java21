@@ -5,6 +5,13 @@ import edu.eci.arsw.parallelism.api.PiCalculationException;
 import org.springframework.stereotype.Service;
 import edu.eci.arsw.parallelism.concurrency.ParallelStrategy;
 import edu.eci.arsw.parallelism.concurrency.ThreadJoinStrategy;
+import edu.eci.arsw.parallelism.monitoring.ExecutionMonitor;
+import edu.eci.arsw.parallelism.monitoring.ExecutionResult;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
 
 @Service
 public class PiDigitsService {
@@ -55,5 +62,42 @@ public class PiDigitsService {
         } else {
             throw new PiCalculationException(PiCalculationException.INVALID_STRATEGY);
         }
+    }
+
+
+    public Map<String, Object> comparePerformance(int start, int count) {
+
+        ExecutionMonitor monitor = new ExecutionMonitor();
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        int cores = Runtime.getRuntime().availableProcessors();
+
+        ExecutionResult seq = monitor.measure(() ->
+                calculateSequential(start, count)
+        );
+
+        response.put("sequential_ms", seq.getTimeMs());
+
+        int[] threadConfigs = {
+                1,
+                cores,
+                cores * 2,
+                200,
+                500
+        };
+
+        Map<String, Long> parallelResults = new LinkedHashMap<>();
+
+        for (int t : threadConfigs) {
+            ExecutionResult par = monitor.measure(() ->
+                    calculateParallel(start, count, t, "threads")
+            );
+            parallelResults.put("threads_" + t, par.getTimeMs());
+        }
+
+        response.put("parallel_ms", parallelResults);
+        response.put("available_processors", cores);
+
+        return response;
     }
 }

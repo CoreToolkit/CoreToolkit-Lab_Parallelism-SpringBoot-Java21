@@ -56,4 +56,20 @@ public class PiDigitsController {
         String digits = service.calculate(start, count, threads, strategy);
         return new PiResponse(start, count, digits);
     }
+
+    @Operation(
+            summary = "Compare sequential vs parallel performance",
+            description = """
+        Compares execution time between sequential and parallel calculation
+        using different thread configurations.
+        """
+    )
+    @GetMapping("/compare")
+    public Object compare(
+            @RequestParam int start,
+            @RequestParam int count
+    ) {
+        return service.comparePerformance(start, count);
+    }
+
 }
