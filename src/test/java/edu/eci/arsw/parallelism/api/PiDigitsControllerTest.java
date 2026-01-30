@@ -73,4 +73,68 @@ class PiDigitsControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    void shouldReturnDigitsCallingParallelButUsingSequencial() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "0")
+                .param("count", "10")
+                .param("threads", "1")
+                .param("strategy", "threads"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.start").value(0))
+                .andExpect(jsonPath("$.count").value(10))
+                .andExpect(jsonPath("$.digits").value("243F6A8885"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenThreadsIsNegative() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "0")
+                .param("count", "100")
+                .param("strategy", "threads")
+                .param("threads", "-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Parameter 'threads' must be at least 1"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenStartAndCountAreNegative() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "-1")
+                .param("count", "-1")
+                .param("strategy", "threads")
+                .param("threads", "2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid interval: start and count must be non-negative"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenStrategyIsInvalid() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "0")
+                .param("count", "100")
+                .param("strategy", "whatever")
+                .param("threads", "2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Unknown strategy parameter"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenMissingThreads() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/digits")
+                .param("start", "0")
+                .param("count", "100")
+                .param("strategy", "threads"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Parameter 'threads' is required for the selected strategy"));
+    }
+
+    @Test
+    void shouldReturnDigitsWithComparison() throws Exception {
+        mockMvc.perform(get("/api/v1/pi/compare")
+                .param("start", "0")
+                .param("count", "100"))
+                .andExpect(status().isOk());
+    }
+
 }
