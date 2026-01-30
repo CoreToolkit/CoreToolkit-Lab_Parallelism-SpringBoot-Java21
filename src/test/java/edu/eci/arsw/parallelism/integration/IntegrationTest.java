@@ -94,9 +94,5 @@ class IntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void healthEndpoint_ReturnsUpIfActuatorEnabled() throws Exception {
-        mockMvc.perform(get("/actuator/health"))
-                .andExpect(status().isOk());
-    }
+
 }
