@@ -11,6 +11,10 @@ public class PiCalculationException extends RuntimeException {
     public static final String INVALID_COUNT_ZERO_OR_NEGATIVE = "Parameter 'count' must be at least 1";
     public static final String INVALID_PARAMETER_TYPE = "Invalid parameter type. Expected a number";
     public static final String INVALID_INTERVAL = "Invalid interval: start and count must be non-negative";
+    public static final String INVALID_THREADS_LESS_THAN_ONE = "Parameter 'threads' must be at least 1";
+    public static final String INVALID_STRATEGY = "Unknown strategy parameter";
+    public static final String MISSING_THREADS = "Parameter 'threads' is required for the selected strategy";
+    public static final String CALCULATION_ERROR = "An error occurred during the Pi calculation";
 
     /**
      * Constructor for PiCalculationException
